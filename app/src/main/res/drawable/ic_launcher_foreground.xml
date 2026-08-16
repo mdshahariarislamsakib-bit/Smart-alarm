@@ -41,12 +41,12 @@
         android:pathData="M54,54 L54,34"
         android:strokeWidth="3.5"
         android:strokeColor="#00FF88"
-        android:strokeCap="round" />
+        android:strokeLineCap="round" />
     <path
         android:pathData="M54,54 L40,64"
         android:strokeWidth="4"
         android:strokeColor="#00F0FF"
-        android:strokeCap="round" />
+        android:strokeLineCap="round" />
 
     <!-- Center Pivot Pin -->
     <path

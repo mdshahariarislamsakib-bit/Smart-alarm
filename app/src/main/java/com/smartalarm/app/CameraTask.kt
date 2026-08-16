@@ -46,7 +46,7 @@ class CameraTask(
                     val provider = future.get()
                     cameraProvider = provider
                     val p = Preview.Builder().build()
-                    p.surfaceProvider = preview.surfaceProvider
+                    p.setSurfaceProvider(preview.surfaceProvider)
 
                     val analysis = ImageAnalysis.Builder()
                         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)

@@ -42,7 +42,7 @@ class AlarmActivity : AppCompatActivity() {
         )
 
         b = ActivityAlarmBinding.inflate(layoutInflater)
-        setContentView(b)
+        setContentView(b.root)
 
         // Block back button intentionally to prevent escaping alarm
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {

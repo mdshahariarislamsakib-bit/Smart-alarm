@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(s: Bundle?) {
         super.onCreate(s)
         b = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(b)
+        setContentView(b.root)
 
         alarms.addAll(AlarmStore.load(this))
 

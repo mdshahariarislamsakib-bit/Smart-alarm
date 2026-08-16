@@ -13,6 +13,7 @@ import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.face.Face
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetectorOptions
 import java.util.concurrent.Executors
@@ -26,14 +27,17 @@ class CameraTask(
     private val executor = Executors.newSingleThreadExecutor()
     private val handler = Handler(Looper.getMainLooper())
     private var last: ByteArray? = null
-    private var motion = 0
-    private var turned = false
+    private var awakeScore = 0
     private var finished = false
     private var cameraProvider: ProcessCameraProvider? = null
 
+    // High-performance real-time face, eye, and landmark detection powered by ML Kit
     private val detector = FaceDetection.getClient(
         FaceDetectorOptions.Builder()
             .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST)
+            .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
+            .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
+            .setMinFaceSize(0.15f)
             .build()
     )
 
@@ -50,6 +54,7 @@ class CameraTask(
 
                     val analysis = ImageAnalysis.Builder()
                         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                        .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_YUV_420_888)
                         .build()
 
                     analysis.setAnalyzer(executor) { image -> analyze(image) }
@@ -75,63 +80,113 @@ class CameraTask(
         }
 
         try {
-            val plane = img.planes.firstOrNull() ?: return
-            val buffer = plane.buffer
-            val n = minOf(buffer.remaining(), 5000)
-            val current = ByteArray(n)
-            buffer.get(current)
+            val media = img.image ?: return
+            val rotationDegrees = img.imageInfo.rotationDegrees
+            val inputImage = InputImage.fromMediaImage(media, rotationDegrees)
 
-            val old = last
-            if (old != null && old.size == current.size) {
-                var total = 0L
-                for (i in current.indices step 20) {
-                    total += abs(
-                        (current[i].toInt() and 255) -
-                            (old[i].toInt() and 255)
-                    )
-                }
-                val avg = total / (current.size / 20).coerceAtLeast(1)
-                if (avg > 10) motion = (motion + 2).coerceAtMost(100)
-            }
-            last = current
+            // Account for sensor rotation in overlay dimensions
+            val imgWidth = if (rotationDegrees == 90 || rotationDegrees == 270) img.height else img.width
+            val imgHeight = if (rotationDegrees == 90 || rotationDegrees == 270) img.width else img.height
 
-            img.image?.let { media ->
-                detector.process(
-                    InputImage.fromMediaImage(
-                        media,
-                        img.imageInfo.rotationDegrees
-                    )
-                ).addOnSuccessListener { faces ->
+            detector.process(inputImage)
+                .addOnSuccessListener { faces ->
                     val face = faces.firstOrNull()
-                    if (face != null && abs(face.headEulerAngleY) > 18f) turned = true
-
-                    handler.post {
-                        root.findViewById<ProgressBar>(R.id.motionProgress)?.progress = motion
-                        root.findViewById<TextView>(R.id.motionLabel)?.text =
-                            "Awake Motion: $motion%"
-
-                        val head = root.findViewById<TextView>(R.id.headLabel)
-                        if (head != null) {
-                            head.text =
-                                if (turned) "Head turn: VERIFIED ✓"
-                                else "Head turn: NOT VERIFIED"
-                            head.setTextColor(
-                                if (turned) Color.rgb(0, 230, 118)
-                                else Color.RED
-                            )
-                        }
-
-                        if (!finished && motion >= 100 && turned) {
-                            finished = true
-                            stop()
-                            done()
-                        }
-                    }
+                    processFaceState(face, imgWidth, imgHeight)
                 }
-            }
+                .addOnFailureListener {
+                    processFaceState(null, imgWidth, imgHeight)
+                }
         } catch (_: Exception) {
         } finally {
             img.close()
+        }
+    }
+
+    private fun processFaceState(face: Face?, imgWidth: Int, imgHeight: Int) {
+        if (finished) return
+
+        var eyesOpen = false
+        var isSmiling = false
+        var leftProb = 0f
+        var rightProb = 0f
+        var smileProb = 0f
+        var headTurned = false
+
+        if (face != null) {
+            leftProb = face.leftEyeOpenProbability ?: 0f
+            rightProb = face.rightEyeOpenProbability ?: 0f
+            smileProb = face.smilingProbability ?: 0f
+            val headYaw = abs(face.headEulerAngleY)
+
+            // Eyes are considered fully open if both probabilities exceed threshold
+            eyesOpen = leftProb >= 0.65f && rightProb >= 0.65f
+            isSmiling = smileProb >= 0.45f
+            headTurned = headYaw > 15f
+
+            if (eyesOpen) {
+                // Rapidly increase awake score when eyes are fully open
+                awakeScore = (awakeScore + 4).coerceAtMost(100)
+                if (isSmiling) {
+                    awakeScore = (awakeScore + 2).coerceAtMost(100)
+                }
+            } else {
+                // Drop awake score if eyes are closed or half-closed
+                awakeScore = (awakeScore - 6).coerceAtLeast(0)
+            }
+        } else {
+            // No face detected, slowly drop score
+            awakeScore = (awakeScore - 3).coerceAtLeast(0)
+        }
+
+        val isFullyAwake = eyesOpen
+
+        handler.post {
+            // Update Canvas Overlay
+            val overlay = root.findViewById<FaceOverlayView>(R.id.faceOverlay)
+            overlay?.updateFace(face, imgWidth, imgHeight, isFullyAwake, awakeScore, frontCam = true)
+
+            // Update Progress Bar
+            root.findViewById<ProgressBar>(R.id.motionProgress)?.progress = awakeScore
+            root.findViewById<TextView>(R.id.motionLabel)?.text =
+                "Awake Verification: $awakeScore%"
+
+            // Update Eye Status Text
+            val eyeLabel = root.findViewById<TextView>(R.id.eyeStatusLabel)
+            if (eyeLabel != null) {
+                if (face != null) {
+                    if (eyesOpen) {
+                        eyeLabel.text = "Eyes: OPEN & ALERT ✓"
+                        eyeLabel.setTextColor(Color.rgb(0, 230, 118)) // Green
+                    } else {
+                        eyeLabel.text = "Eyes: CLOSED / HALF-CLOSED ⚠️"
+                        eyeLabel.setTextColor(Color.rgb(255, 59, 92)) // Red
+                    }
+                } else {
+                    eyeLabel.text = "Eyes: No Face Detected"
+                    eyeLabel.setTextColor(Color.rgb(255, 59, 92))
+                }
+            }
+
+            // Update Smile Text
+            val smileLabel = root.findViewById<TextView>(R.id.smileLabel)
+            if (smileLabel != null) {
+                val pct = (smileProb * 100).toInt()
+                smileLabel.text = if (isSmiling) "Smile: $pct% 😊" else "Smile: $pct%"
+                smileLabel.setTextColor(if (isSmiling) Color.rgb(0, 230, 118) else Color.rgb(0, 229, 255))
+            }
+
+            // Update Head / Motion Text
+            val headLabel = root.findViewById<TextView>(R.id.headLabel)
+            if (headLabel != null) {
+                headLabel.text = if (headTurned) "Head Movement: VERIFIED ✓" else "Keep eyes open & hold phone up"
+            }
+
+            // Verification Complete Trigger
+            if (!finished && awakeScore >= 100) {
+                finished = true
+                stop()
+                done()
+            }
         }
     }
 

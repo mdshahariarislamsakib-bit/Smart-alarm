@@ -1,18 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:gravity="center" android:orientation="vertical" android:background="@drawable/bg_danger" android:padding="20dp">
-    <TextView android:text="🧠 MENTAL MATH" android:textColor="@color/cyan"
-        android:textSize="23sp" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-    <TextView android:id="@+id/mathCount" android:text="Correct: 0 / 3" android:textColor="@color/white"
-        android:layout_marginTop="12dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-    <TextView android:id="@+id/question" android:text="12 + 12 = ?" android:textColor="@color/white"
-        android:textSize="38sp" android:textStyle="bold" android:layout_marginTop="25dp"
-        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-    <EditText android:id="@+id/answer" android:inputType="numberSigned" android:hint="Answer"
-        android:textColor="@color/white" android:textColorHint="@color/muted" android:gravity="center"
-        android:layout_marginTop="20dp" android:layout_width="220dp" android:layout_height="55dp"/>
-    <Button android:id="@+id/submit" android:text="CHECK ANSWER"
-        android:layout_marginTop="12dp" android:layout_width="220dp" android:layout_height="52dp"/>
-    <TextView android:id="@+id/feedback" android:textColor="@color/red" android:gravity="center"
-        android:layout_marginTop="12dp" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:background="@color/bg"
+    android:padding="24dp">
+
+    <TextView
+        android:text="🧠 MENTAL MATH CHALLENGE"
+        android:textColor="@color/cyan"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.05"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/mathCount"
+        android:text="Progress: 0 / 3 Correct"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:layout_marginTop="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_panel"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_marginTop="24dp"
+        android:padding="24dp">
+
+        <TextView
+            android:id="@+id/question"
+            android:text="12 + 12 = ?"
+            android:textColor="@color/cyan"
+            android:textSize="42sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.02"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/answer"
+            android:inputType="numberSigned"
+            android:hint="Type Answer"
+            android:textColor="@color/white"
+            android:textColorHint="@color/muted"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:background="@drawable/bg_panel"
+            android:layout_marginTop="20dp"
+            android:layout_width="220dp"
+            android:layout_height="55dp" />
+
+        <Button
+            android:id="@+id/submit"
+            android:text="SUBMIT ANSWER"
+            android:textColor="@color/bg"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:background="@drawable/button_cyan"
+            android:layout_marginTop="14dp"
+            android:layout_width="220dp"
+            android:layout_height="52dp" />
+
+        <TextView
+            android:id="@+id/feedback"
+            android:text=""
+            android:textColor="@color/red"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 </LinearLayout>

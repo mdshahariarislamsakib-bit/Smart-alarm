@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.view.animation.DecelerateInterpolator
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -41,6 +42,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(s)
         b = ActivityMainBinding.inflate(layoutInflater)
         setContentView(b.root)
+
+        // Smooth dashboard entrance animation
+        b.mainContentLayout.alpha = 0f
+        b.mainContentLayout.translationY = 40f
+        b.mainContentLayout.animate()
+            .alpha(1f)
+            .translationY(0f)
+            .setDuration(450)
+            .setInterpolator(DecelerateInterpolator())
+            .start()
 
         alarms.addAll(AlarmStore.load(this))
 
@@ -107,6 +118,7 @@ class MainActivity : AppCompatActivity() {
             AlarmStore.save(this, alarms)
             AlarmScheduler.schedule(this, a)
             render()
+            Toast.makeText(this, "Alarm set for %02d:%02d".format(a.hour, a.minute), Toast.LENGTH_SHORT).show()
         }
 
         val handler = android.os.Handler(mainLooper)

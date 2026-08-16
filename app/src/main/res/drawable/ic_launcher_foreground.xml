@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Outer Glow Circle -->
+    <path
+        android:fillColor="#1A00F0FF"
+        android:pathData="M54,54m-38,0a38,38 0,1 1,76 0a38,38 0,1 1,-76 0" />
+
+    <!-- Clock Frame -->
+    <path
+        android:pathData="M54,54m-30,0a30,30 0,1 1,60 0a30,30 0,1 1,-60 0"
+        android:strokeWidth="4"
+        android:strokeColor="#00F0FF">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:angle="90"
+                android:endColor="#0F172A"
+                android:startColor="#1E293B"
+                android:type="linear" />
+        </aapt:attr>
+    </path>
+
+    <!-- Top Bells / Hammers -->
+    <path
+        android:fillColor="#FF2A55"
+        android:pathData="M33.5,23.5 L25,32 L20.5,27.5 L29,19 Z" />
+    <path
+        android:fillColor="#FF2A55"
+        android:pathData="M74.5,23.5 L66,19 L70.5,14.5 L79,19 Z" />
+    <path
+        android:fillColor="#00F0FF"
+        android:pathData="M51,16 h6 v6 h-6 z" />
+
+    <!-- Clock Hands (Pointing at 7:00 AM) -->
+    <path
+        android:pathData="M54,54 L54,34"
+        android:strokeWidth="3.5"
+        android:strokeColor="#00FF88"
+        android:strokeCap="round" />
+    <path
+        android:pathData="M54,54 L40,64"
+        android:strokeWidth="4"
+        android:strokeColor="#00F0FF"
+        android:strokeCap="round" />
+
+    <!-- Center Pivot Pin -->
+    <path
+        android:fillColor="#FFD600"
+        android:pathData="M54,54m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0" />
+
+    <!-- Legs -->
+    <path
+        android:fillColor="#00F0FF"
+        android:pathData="M31,80 L25,90 L20,86 L26,76 Z" />
+    <path
+        android:fillColor="#00F0FF"
+        android:pathData="M77,80 L83,90 L88,86 L82,76 Z" />
+</vector>

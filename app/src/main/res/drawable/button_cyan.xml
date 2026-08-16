@@ -1,8 +1,13 @@
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_pressed="true">
-        <shape><solid android:color="#008EA0"/><corners android:radius="14dp"/></shape>
-    </item>
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/cyan_glow">
     <item>
-        <shape><solid android:color="@color/cyan"/><corners android:radius="14dp"/></shape>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#00F0FF"
+                android:endColor="#00A8FF"
+                android:angle="90" />
+            <corners android:radius="14dp" />
+        </shape>
     </item>
-</selector>
+</ripple>

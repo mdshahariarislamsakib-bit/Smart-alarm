@@ -1,11 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="bg">#0B0F19</color>
-    <color name="panel">#121927</color>
-    <color name="cyan">#00E5FF</color>
-    <color name="red">#FF3B5C</color>
-    <color name="green">#00E676</color>
-    <color name="yellow">#FFD740</color>
-    <color name="blue">#2979FF</color>
-    <color name="white">#F5F7FA</color>
-    <color name="muted">#8E9AAF</color>
+    <color name="bg">#070A12</color>
+    <color name="bg_card">#0F172A</color>
+    <color name="panel">#131D31</color>
+    <color name="panel_border">#1E293B</color>
+
+    <color name="cyan">#00F0FF</color>
+    <color name="cyan_glow">#3300F0FF</color>
+    
+    <color name="red">#FF2A55</color>
+    <color name="red_glow">#40FF2A55</color>
+
+    <color name="green">#00FF88</color>
+    <color name="green_glow">#4000FF88</color>
+
+    <color name="yellow">#FFD600</color>
+    <color name="yellow_glow">#40FFD600</color>
+
+    <color name="blue">#3B82F6</color>
+    <color name="blue_glow">#403B82F6</color>
+
+    <color name="purple">#A855F7</color>
+    <color name="white">#F8FAFC</color>
+    <color name="muted">#94A3B8</color>
+    <color name="muted_dark">#475569</color>
 </resources>

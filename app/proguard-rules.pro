@@ -1,17 +1,22 @@
-# Proguard rules for SmartAlarm
+# Proguard & R8 optimization rules for SmartAlarm
 
-# Keep ViewBinding classes
+# Preserve ViewBinding
 -keepclassmembers class * implements androidx.viewbinding.ViewBinding {
     public static * inflate(...);
     public static * bind(...);
 }
 
-# Keep ML Kit and CameraX classes
+# Preserve ML Kit and CameraX
 -keep class com.google.mlkit.** { *; }
 -keep class androidx.camera.** { *; }
+-dontwarn com.google.mlkit.**
+-dontwarn androidx.camera.**
 
-# Keep Alarm data model for JSON serialization
+# Preserve Alarm Data Model
 -keepclassmembers class com.smartalarm.app.AlarmData {
     <fields>;
     <methods>;
 }
+
+# Keep Activities, Services, Receivers
+-keep class com.smartalarm.app.** { *; }

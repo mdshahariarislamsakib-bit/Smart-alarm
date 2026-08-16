@@ -1,0 +1,12 @@
+Smart Alarm 3.0
+- Root Gradle project
+- Gradle wrapper configuration/scripts
+- app module
+- Kotlin source
+- XML layouts/resources
+- CameraX + ML Kit
+- AlarmManager + boot receiver
+- Foreground alarm audio service
+- 3 bundled WAV alarm sounds
+- Custom MP3/WAV picker
+- README with Android Code Studio troubleshooting

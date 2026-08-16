@@ -1,0 +1,18 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:gravity="center" android:orientation="vertical" android:padding="18dp">
+    <TextView android:text="🎨 SIMON MEMORY" android:textColor="@color/cyan"
+        android:textSize="24sp" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+    <TextView android:id="@+id/level" android:text="Level 1 • Watch the sequence"
+        android:textColor="@color/white" android:textSize="16sp" android:layout_marginTop="8dp"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+    <TextView android:id="@+id/simonStatus" android:text="Get ready…" android:textColor="@color/muted"
+        android:layout_marginTop="10dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+    <GridLayout android:rowCount="2" android:columnCount="2" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:layout_marginTop="25dp">
+        <Button android:id="@+id/red" android:text="RED" android:tag="0" android:layout_width="145dp" android:layout_height="120dp"/>
+        <Button android:id="@+id/blue" android:text="BLUE" android:tag="1" android:layout_width="145dp" android:layout_height="120dp"/>
+        <Button android:id="@+id/yellow" android:text="YELLOW" android:tag="2" android:layout_width="145dp" android:layout_height="120dp"/>
+        <Button android:id="@+id/green" android:text="GREEN" android:tag="3" android:layout_width="145dp" android:layout_height="120dp"/>
+    </GridLayout>
+</LinearLayout>

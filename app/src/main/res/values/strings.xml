@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Smart Alarm</string>
+    <string name="alarm_ringing">🚨 Smart Alarm</string>
+    <string name="alarm_description">Complete the wake-up tasks to dismiss the alarm.</string>
+</resources>

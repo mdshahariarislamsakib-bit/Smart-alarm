@@ -1,0 +1,20 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <androidx.camera.view.PreviewView android:id="@+id/preview"
+        android:layout_width="match_parent" android:layout_height="match_parent"/>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="16dp" android:background="#CC0B0F19"
+        android:layout_gravity="bottom">
+        <TextView android:text="📷 MOVE + TURN YOUR HEAD" android:textColor="@color/white"
+            android:textSize="20sp" android:textStyle="bold" android:gravity="center"
+            android:layout_width="match_parent" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/motionLabel" android:text="Awake Motion: 0%"
+            android:textColor="@color/cyan" android:layout_marginTop="8dp"
+            android:layout_width="match_parent" android:layout_height="wrap_content"/>
+        <ProgressBar android:id="@+id/motionProgress" style="?android:attr/progressBarStyleHorizontal"
+            android:max="100" android:progress="0" android:layout_width="match_parent" android:layout_height="8dp"/>
+        <TextView android:id="@+id/headLabel" android:text="Head turn: NOT VERIFIED"
+            android:textColor="@color/red" android:layout_marginTop="7dp"
+            android:layout_width="match_parent" android:layout_height="wrap_content"/>
+    </LinearLayout>
+</FrameLayout>

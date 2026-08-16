@@ -1,0 +1,26 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root" android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/bg">
+    <View android:id="@+id/redPulse" android:layout_width="match_parent"
+        android:layout_height="match_parent" android:background="#3300FF55"/>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+        android:orientation="vertical" android:gravity="center_horizontal" android:padding="20dp">
+        <TextView android:text="🚨 WAKE UP" android:textColor="@color/red"
+            android:textSize="34sp" android:textStyle="bold" android:layout_marginTop="25dp"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/alarmClock" android:text="ALARM" android:textColor="@color/white"
+            android:textSize="24sp" android:layout_marginTop="4dp"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        <TextView android:id="@+id/stepText" android:text="Step 1 of 3" android:textColor="@color/cyan"
+            android:textSize="16sp" android:textStyle="bold" android:layout_marginTop="16dp"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        <ProgressBar android:id="@+id/overallProgress" style="?android:attr/progressBarStyleHorizontal"
+            android:max="100" android:progress="0" android:layout_width="match_parent"
+            android:layout_height="8dp" android:layout_marginTop="10dp"/>
+        <FrameLayout android:id="@+id/taskContainer" android:layout_width="match_parent"
+            android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="20dp"/>
+        <TextView android:id="@+id/statusText" android:text="Complete every task to stop the alarm."
+            android:textColor="@color/muted" android:gravity="center"
+            android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="18dp"/>
+    </LinearLayout>
+</FrameLayout>

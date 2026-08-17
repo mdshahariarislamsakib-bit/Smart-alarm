@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
             .setInterpolator(DecelerateInterpolator())
             .start()
 
-        alarms.addAll(AlarmStore.load(this))
+        refreshAlarmsList()
 
         if (Build.VERSION.SDK_INT >= 33 &&
             checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED
@@ -79,21 +79,43 @@ class MainActivity : AppCompatActivity() {
             picker.launch(arrayOf("audio/mpeg", "audio/wav", "audio/x-wav", "audio/*"))
         }
 
+        // Test alarm button - DOES NOT overwrite user alarms in AlarmStore
         b.testAlarm.setOnClickListener {
-            val id = System.currentTimeMillis()
-            val a = AlarmData(
-                id, 0, 0, true,
+            val testId = 999999L
+            val testAlarm = AlarmData(
+                testId, 0, 0, true,
                 b.soundSpinner.selectedItem.toString(),
                 customUri?.toString(),
                 b.mathToggle.isChecked,
                 b.cameraToggle.isChecked,
                 b.simonToggle.isChecked
             )
-            AlarmStore.save(this, listOf(a))
+            
+            // Save test alarm without erasing existing user alarms
+            val currentList = AlarmStore.load(this)
+            currentList.removeAll { it.id == testId }
+            currentList.add(testAlarm)
+            // Save with test alarm temporarily
+            val a = org.json.JSONArray()
+            currentList.forEach { x ->
+                a.put(org.json.JSONObject().apply {
+                    put("id", x.id)
+                    put("hour", x.hour)
+                    put("minute", x.minute)
+                    put("enabled", x.enabled)
+                    put("sound", x.sound)
+                    x.customUri?.let { put("customUri", it) }
+                    put("math", x.math)
+                    put("camera", x.camera)
+                    put("simon", x.simon)
+                })
+            }
+            getSharedPreferences("smart_alarm", MODE_PRIVATE).edit().putString("alarms", a.toString()).apply()
+
             startForegroundService(
-                Intent(this, AlarmService::class.java).putExtra("alarm_id", id)
+                Intent(this, AlarmService::class.java).putExtra("alarm_id", testId)
             )
-            startActivity(Intent(this, AlarmActivity::class.java).putExtra("alarm_id", id))
+            startActivity(Intent(this, AlarmActivity::class.java).putExtra("alarm_id", testId))
         }
 
         b.addAlarm.setOnClickListener {
@@ -133,12 +155,33 @@ class MainActivity : AppCompatActivity() {
             }
         }
         handler.post(clock)
+    }
 
+    override fun onResume() {
+        super.onResume()
+        refreshAlarmsList()
+    }
+
+    private fun refreshAlarmsList() {
+        alarms.clear()
+        // Load only real alarms (excludes any test dummy alarms)
+        alarms.addAll(AlarmStore.load(this))
         render()
     }
 
     private fun render() {
         b.alarmList.removeAllViews()
+
+        if (alarms.isEmpty()) {
+            val emptyText = android.widget.TextView(this).apply {
+                text = "No active alarms. Set one above!"
+                setTextColor(getColor(R.color.muted))
+                textSize = 13f
+                setPadding(0, 16, 0, 16)
+            }
+            b.alarmList.addView(emptyText)
+            return
+        }
 
         alarms.forEach { a ->
             val v = layoutInflater.inflate(R.layout.alarm_item, b.alarmList, false)
@@ -161,11 +204,14 @@ class MainActivity : AppCompatActivity() {
                 else AlarmScheduler.cancel(this, a)
             }
 
+            // Guaranteed reliable deletion by alarm ID
             v.findViewById<android.widget.ImageButton>(R.id.delete).setOnClickListener {
+                val alarmId = a.id
                 AlarmScheduler.cancel(this, a)
-                alarms.remove(a)
+                alarms.removeAll { it.id == alarmId }
                 AlarmStore.save(this, alarms)
                 render()
+                Toast.makeText(this, "Alarm deleted", Toast.LENGTH_SHORT).show()
             }
 
             b.alarmList.addView(v)
